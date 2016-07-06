@@ -20,27 +20,27 @@ global bandMathsNode
 global writeNode
 global reprojectNode
 
-readFile = open("readNode.xml")
+readFile = open("nodes/readNode.xml")
 readNode = readFile.readlines();
 readFile.close()
 
-subsetRegionFile = open("subsetRegionNode.xml")
+subsetRegionFile = open("nodes/subsetRegionNode.xml")
 subsetRegionNode = subsetRegionFile.readlines()
 subsetRegionFile.close()
 
-selectBandFile = open("selectBandNode.xml")
+selectBandFile = open("nodes/selectBandNode.xml")
 selectBandNode = selectBandFile.readlines()
 selectBandFile.close()
 
-bandMathsFile = open("bandMathsNode.xml")
+bandMathsFile = open("nodes/bandMathsNode.xml")
 bandMathsNode = bandMathsFile.readlines()
 bandMathsFile.close()
 
-writeFile = open("writeNode.xml")
+writeFile = open("nodes/writeNode.xml")
 writeNode = writeFile.readlines()
 writeFile.close()
 
-reprojectFile = open("reprojectNode.xml")
+reprojectFile = open("nodes/reprojectNode.xml")
 reprojectNode = reprojectFile.readlines()
 reprojectFile.close()
 

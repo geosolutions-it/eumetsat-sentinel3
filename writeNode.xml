@@ -1,0 +1,11 @@
+<node id="$WRITEID">
+    <operator>Write</operator>
+    <sources>
+        <source refid="$REFID"/>
+    </sources>
+    <parameters>
+        <file>$OUTPUTFILE</file>
+        <formatName>$FORMAT</formatName>
+        <deleteOutputOnFailure>true</deleteOutputOnFailure>
+    </parameters>
+</node>

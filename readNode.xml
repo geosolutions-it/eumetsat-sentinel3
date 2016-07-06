@@ -1,0 +1,8 @@
+<node id="read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters>
+        <file>$INPUTFILE</file>
+        <formatName>$FORMAT</formatName>
+    </parameters>
+</node>

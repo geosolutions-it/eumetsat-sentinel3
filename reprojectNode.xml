@@ -1,0 +1,16 @@
+<node id="$REPROJECTID">
+    <operator>Reproject</operator>
+    <sources>
+        <source refid="$REFID"/>
+    </sources>
+    <parameters>
+        <wktFile/>
+        <crs>EPSG:4326</crs>
+        <resampling>$RESAMPLING</resampling>
+        <noDataValue>$NODATA</noDataValue>
+        <includeTiePointGrids>false</includeTiePointGrids>
+        <addDeltaBands>false</addDeltaBands>
+        <pixelSizeX>$RESOLUTION</pixelSizeX>
+        <pixelSizeY>$RESOLUTION</pixelSizeY>
+    </parameters>
+</node>

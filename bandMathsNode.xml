@@ -1,0 +1,9 @@
+<node id="$BANDMATHID">
+    <operator>BandMaths</operator>
+    <sources>
+        <source refid="$REFID"/>
+    </sources>
+    <parameters>
+        <targetBands>$TARGETBANDS</targetBands>
+    </parameters>
+</node>

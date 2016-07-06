@@ -1,0 +1,124 @@
+<config>
+    <processing>
+        <outputRootFolder>/work/data/eumetsat/SENTINEL-4-2</outputRootFolder>
+        <deleteFiles>False</deleteFiles>
+        <cleanupOnFailure>True</cleanupOnFailure>
+        <overlapping>10</overlapping>
+        <writeSummary>True</writeSummary>
+        <mosaic>True</mosaic>
+        <GPTArguments>
+            <tileCacheMemory>1200M</tileCacheMemory>
+            <flushCache>False</flushCache>
+            <threads>2</threads>
+            <!-- JVMArguments></JVMArguments -->
+        </GPTArguments>
+    </processing>
+    <mosaicking>
+        <maxTimePeriodPerMosaic>3600</maxTimePeriodPerMosaic>
+        <maxGranulesPerMosaic>100</maxGranulesPerMosaic>
+        <GDALCreateOptions>
+            <TILED>YES</TILED>
+            <SPARSE_OK>TRUE</SPARSE_OK>
+            <COMPRESS>DEFLATE</COMPRESS>
+        </GDALCreateOptions>
+        <overviews>5</overviews>
+    </mosaicking>
+    <products>
+        <default>
+            <format>GeoTIFF-BigTIFF</format>
+            <nodata>NaN</nodata>
+            <resolution>0.01</resolution>
+        </default>
+        <OLCIL2>
+            <resolution>0.01</resolution>
+            <blocksize>fullswath,2000</blocksize>
+            <bandNames>CHL_OC4ME</bandNames><!-- longitude,latitude, -->
+            <defaultProfile>CLOUD</defaultProfile>
+        </OLCIL2>
+        <OLCIL1>
+            <resolution>0.01</resolution>
+            <bandNames>Oa08_radiance,Oa06_radiance,Oa02_radiance</bandNames><!-- longitude,latitude -->
+            <blocksize>fullswath,800</blocksize>
+            <defaultProfile>OLCIRGB</defaultProfile>
+        </OLCIL1>
+        <SLSTRL2>
+            <resolution>0.02</resolution>
+            <blocksize>1000,500</blocksize>
+            <bandNames>sea_surface_temperature</bandNames><!--lon,lat,-->
+            <defaultProfile>SST</defaultProfile>
+        </SLSTRL2>
+        <SLSTRL1>
+            <resolution>0.01</resolution>
+            <blocksize>fullswath,500</blocksize>
+        </SLSTRL1>
+    </products>
+    <profiles>
+        <OLCIRGB>
+            <splitbyband>False</splitbyband>
+            <preMosaicProcess>
+                <method>gdalrgb</method>
+                <parameters>-a_nodata 0 -scale 0 300 1 255</parameters>
+            </preMosaicProcess>
+        </OLCIRGB>
+        <SST>
+            <flagsManagement>
+                <controlBands>quality_level</controlBands>
+                <outputBands>
+                    <outputBand>
+                        <name>sea_surface_temperature</name>
+                        <expression>quality_level &gt;=3 ? sea_surface_temperature : NaN
+                        </expression>
+                    </outputBand>
+                </outputBands>
+            </flagsManagement>
+        </SST>
+        <CLOUD>
+            <flagsManagement>
+                <controlBands>WQSF_lsb</controlBands>
+                <outputBands>
+                    <outputBand>
+                        <name>CHL_OC4ME</name>
+                        <expression>!WQSF_lsb.CLOUD &amp;&amp; !WQSF_lsb.OC4ME_FAIL ? CHL_OC4ME : NaN</expression>
+                    </outputBand>
+                </outputBands>
+            </flagsManagement>
+        </CLOUD>
+        <RGBnadir>
+            <grid>0.5 km stripe A</grid>
+            <splitbyband>False</splitbyband>
+            <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
+            <bandNames>S3_radiance_an,S2_radiance_an,S1_radiance_an</bandNames>
+            <preMosaicProcess>
+                <method>gdalrgb</method>
+                <parameters>-a_nodata 0 -scale 5 400 1 255</parameters>
+            </preMosaicProcess>
+        </RGBnadir>
+        <RGBnadirDay>
+            <grid>0.5 km stripe A</grid>
+            <splitbyband>False</splitbyband>
+            <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
+            <bandNames>S3_radiance_an,S2_radiance_an,S1_radiance_an</bandNames>
+            <flagsManagement>
+                <controlBands>confidence_an</controlBands>
+                <outputBands>
+                    <outputBand>
+                        <name>S3_radiance_an_daytime</name>
+                        <expression>confidence_an.day ? S3_radiance_an : NaN</expression>
+                    </outputBand>
+                    <outputBand>
+                        <name>S2_radiance_an_daytime</name>
+                        <expression>confidence_an.day ? S2_radiance_an : NaN</expression>
+                    </outputBand>
+                    <outputBand>
+                        <name>S1_radiance_an_daytime</name>
+                        <expression>confidence_an.day ? S1_radiance_an : NaN</expression>
+                    </outputBand>
+                </outputBands>
+            </flagsManagement>
+            <preMosaicProcess>
+                <method>gdalrgb</method>
+                <parameters>-a_nodata 0 -scale 10 400 1 255</parameters>
+            </preMosaicProcess>
+        </RGBnadirDay>
+    </profiles>
+</config>

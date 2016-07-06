@@ -1,0 +1,10 @@
+<node id="$SUBSETREGIONID">
+    <operator>Subset</operator>
+    <sources>
+        <source refid="read"/>
+    </sources>
+    <parameters>
+        <region>$REGION</region>
+        <bandNames>$BANDNAMES</bandNames>
+    </parameters>
+</node>

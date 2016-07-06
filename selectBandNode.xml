@@ -1,0 +1,9 @@
+<node id="$SELECTBANDID">
+    <operator>Subset</operator>
+    <sources>
+        <source refid="$REFID"/>
+    </sources>
+    <parameters>
+        <bandNames>$BANDNAMES</bandNames>
+    </parameters>
+</node>

@@ -33,13 +33,13 @@
             <resolution>0.01</resolution>
             <blocksize>fullswath,2000</blocksize>
             <bandNames>CHL_OC4ME</bandNames><!-- longitude,latitude, -->
-            <defaultProfile>CLOUD</defaultProfile>
+            <defaultProfile>OC4MENoCloud</defaultProfile>
         </OLCIL2>
         <OLCIL1>
             <resolution>0.01</resolution>
             <bandNames>Oa08_radiance,Oa06_radiance,Oa02_radiance</bandNames><!-- longitude,latitude -->
             <blocksize>fullswath,800</blocksize>
-            <defaultProfile>OLCIRGB</defaultProfile>
+            <defaultProfile>OLCIL1RGB</defaultProfile>
         </OLCIL1>
         <SLSTRL2>
             <resolution>0.02</resolution>
@@ -48,18 +48,18 @@
             <defaultProfile>SST</defaultProfile>
         </SLSTRL2>
         <SLSTRL1>
-            <resolution>0.01</resolution>
+            <resolution>0.005</resolution>
             <blocksize>fullswath,500</blocksize>
         </SLSTRL1>
     </products>
     <profiles>
-        <OLCIRGB>
+        <OLCIL1RGB>
             <splitbyband>False</splitbyband>
             <preMosaicProcess>
                 <method>gdalrgb</method>
                 <parameters>-a_nodata 0 -scale 0 300 1 255</parameters>
             </preMosaicProcess>
-        </OLCIRGB>
+        </OLCIL1RGB>
         <SST>
             <flagsManagement>
                 <controlBands>quality_level</controlBands>
@@ -72,7 +72,7 @@
                 </outputBands>
             </flagsManagement>
         </SST>
-        <CLOUD>
+        <OC4MENoCloud>
             <flagsManagement>
                 <controlBands>WQSF_lsb</controlBands>
                 <outputBands>
@@ -82,18 +82,23 @@
                     </outputBand>
                 </outputBands>
             </flagsManagement>
-        </CLOUD>
-        <RGBnadir>
+        </OC4MENoCloud>
+        <SLSTRL1RGBnadir>
             <grid>0.5 km stripe A</grid>
             <splitbyband>False</splitbyband>
             <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
             <bandNames>S3_radiance_an,S2_radiance_an,S1_radiance_an</bandNames>
             <preMosaicProcess>
                 <method>gdalrgb</method>
-                <parameters>-a_nodata 0 -scale 5 400 1 255</parameters>
+                <parameters>-a_nodata 0 -scale 20 400 1 255</parameters>
             </preMosaicProcess>
-        </RGBnadir>
-        <RGBnadirDay>
+        </SLSTRL1RGBnadir>
+        <SLSTRL1IRnadir>
+            <grid>1 km</grid>
+            <readerFormat>Sen3_SLSTRL1B_1km</readerFormat>
+            <bandNames>S8_BT_in</bandNames>
+        </SLSTRL1IRnadir>
+        <SLSTRL1RGBnadirDay>
             <grid>0.5 km stripe A</grid>
             <splitbyband>False</splitbyband>
             <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
@@ -117,8 +122,22 @@
             </flagsManagement>
             <preMosaicProcess>
                 <method>gdalrgb</method>
-                <parameters>-a_nodata 0 -scale 10 400 1 255</parameters>
+                <parameters>-a_nodata 0 -scale 20 400 1 255</parameters>
             </preMosaicProcess>
-        </RGBnadirDay>
+        </SLSTRL1RGBnadirDay>
+        <SLSTRL1IRnadirNight>
+            <grid>1 km</grid>
+            <readerFormat>Sen3_SLSTRL1B_1km</readerFormat>
+            <bandNames>S8_BT_in</bandNames>
+            <flagsManagement>
+                <controlBands>confidence_in</controlBands>
+                <outputBands>
+                    <outputBand>
+                        <name>S8_BT_in_nightime</name>
+                        <expression>confidence_in.day ? NaN : S8_BT_in</expression>
+                    </outputBand>
+                </outputBands>
+            </flagsManagement>
+        </SLSTRL1IRnadirNight>
     </profiles>
 </config>

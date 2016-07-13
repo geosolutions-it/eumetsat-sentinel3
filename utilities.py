@@ -66,6 +66,10 @@ def skipBand (band):
     
 def setGPTCommand(GPTArguments, graphFile):
     command = ["gpt.sh"]
+    #command = ["java","-cp","\"../modules/*:../lib/*\"",
+    #           "-Dsnap.mainClass=org.esa.snap.core.gpf.main.GPT",
+    #           "-Dsnap.home=\"../\"","-Xmx2400M","org.esa.snap.runtime.Launcher"]
+    
     command = appendOptions(GPTArguments, command)
     command.append(graphFile)
     return command

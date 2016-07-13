@@ -1,11 +1,8 @@
-import random
 import math
 import string
 import sys
 import time
 import os
-import ConfigParser
-import datetime
 import logging
 import settings
 from utilities import *
@@ -133,6 +130,7 @@ class GraphBuilder():
             
         if outputBands is not None:
             bandNames = getOutputBandnames(outputBands)
+            productSummary.bandNames = bandNames
         bands = bandNames.split(',')    
         if splitBands(splitbyband):
             for band in bands:

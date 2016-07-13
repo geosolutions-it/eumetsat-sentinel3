@@ -14,14 +14,13 @@ from utilities import *
 from mosaicking import *
 from os import listdir
 from os.path import isfile, join
-from subprocess import call
 from dateutil import parser
 
 
 logger = logging.getLogger('georectify')
 # =============================================================================
 def Usage():
-    print 'Usage: georectify.py <path_to_input_filelist> <profile>' 
+    print 'Usage: georectify.py <path_to_input_filelist> [<profile>]' 
     sys.exit(1)
 
 # =============================================================================
@@ -72,18 +71,17 @@ def createGraph(inputFile, configuration, profile=None):
     return computationSummary
     
 
-
-
 def main():
     global verbose 
     verbose = False  
 
     # Parse command line arguments.
     argv = sys.argv
+    numParams = len(argv)
+    if numParams < 2:
+        Usage()
     
     files = argv[1]
-    
-    numParams = len(argv)
     profile = argv[2] if numParams == 3 else None
 
     # Parse configuration

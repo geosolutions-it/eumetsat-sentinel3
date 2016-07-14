@@ -12,6 +12,7 @@ except ImportError:
 #Properties
 summaryPropertiesFile = 'summary.properties'
 loggingPropertiesFile = 'logging.properties'
+manifestFile = 'xfdumanifest.xml'
 configFile = 'config.xml'
 
 blocksize                 = None

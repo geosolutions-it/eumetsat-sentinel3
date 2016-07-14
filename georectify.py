@@ -20,7 +20,7 @@ from dateutil import parser
 logger = logging.getLogger('georectify')
 # =============================================================================
 def Usage():
-    print 'Usage: georectify.py <path_to_input_filelist> [<profile>]' 
+    print 'Usage: georectify.py <path_to_input_list> [<profile>]' 
     sys.exit(1)
 
 # =============================================================================
@@ -92,6 +92,7 @@ def main():
         for line in f:
             line = line.rstrip('\n')
             if (len(line) > 0):
+                line = os.path.join(line, manifestFile)
                 fileList.append(line)
     for inputFile in fileList:
         message = fileNotExists(inputFile, 'skipping it')

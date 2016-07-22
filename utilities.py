@@ -52,7 +52,7 @@ def formatTime(time):
 def getDeltaSeconds(newTime, oldTime):
     old = parser.parse(oldTime)
     new = parser.parse(newTime)
-    return (new - old).total_seconds()
+    return (new - old).seconds
 
 def splitBands(splitbyband):
     return str(splitbyband).upper() == 'TRUE'

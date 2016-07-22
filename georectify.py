@@ -20,7 +20,13 @@ from dateutil import parser
 logger = logging.getLogger('georectify')
 # =============================================================================
 def Usage():
-    print 'Usage: georectify.py <path_to_input_list> [<profile>]' 
+    print "Usage: georectify.py [-d] <inputs> [<profile>]"
+    print " "
+    print "    inputs: a file.lst containing the full paths of the input folders " 
+    print "            of each product to be processed, a line for each product "
+    print "        -d: optional 'directory' option to specify that the <inputs> "
+    print "            parameter is not a file.lst but a directory containing   "
+    print "            input folders instead                                    " 
     sys.exit(1)
 
 # =============================================================================
@@ -81,19 +87,31 @@ def main():
     if numParams < 2:
         Usage()
     
-    files = argv[1]
-    profile = argv[2] if numParams == 3 else None
+    paramIndex = 1
+    param = argv[paramIndex]
+    isDirectory = False
+    if param == '-d':
+        isDirectory = True
+        paramIndex+=1
+    inputs = argv[paramIndex]
+    paramIndex+=1
+    profile = argv[paramIndex] if numParams > (paramIndex) else None
 
     # Parse configuration
     configuration = setup_config()
     mosaicker = Mosaicker(configuration)
     fileList = []
-    with open(files) as f:
-        for line in f:
-            line = line.rstrip('\n')
-            if (len(line) > 0):
-                line = os.path.join(line, manifestFile)
-                fileList.append(line)
+    if isDirectory:
+        for name in os.listdir(inputs):
+            subdir = os.path.join(inputs, name)
+            if os.path.isdir(subdir):
+                fileList.append(os.path.join(subdir, manifestFile))
+    else:    
+        with open(inputs) as f:
+            for line in f:
+                line = line.rstrip('\n')
+                if (len(line) > 0):
+                    fileList.append(os.path.join(line, manifestFile))
     for inputFile in fileList:
         message = fileNotExists(inputFile, 'skipping it')
         if message is not None:

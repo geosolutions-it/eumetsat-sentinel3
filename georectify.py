@@ -112,6 +112,9 @@ def main():
                 line = line.rstrip('\n')
                 if (len(line) > 0):
                     fileList.append(os.path.join(line, manifestFile))
+    if len(fileList) == 0:
+        logger.warn("No input files available, exit")
+        return
     for inputFile in fileList:
         message = fileNotExists(inputFile, 'skipping it')
         if message is not None:

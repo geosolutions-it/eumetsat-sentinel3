@@ -222,11 +222,13 @@ class ChunksManager:
             
             # TODO: Make sure to handle wrong conditions
             if (len(blocksizes) == 2):
+                blocky = int(blocksizes[1])
                 if (blocksizes[0] == 'fullswath'):
                     chunkWidth = columns
                 else: 
-                    chunkWidth = int(blocksizes[0])
-                chunkHeight = int(blocksizes[1]) 
+                    blockx = int(blocksizes[0])
+                    chunkWidth = blockx if blockx < columns else columns
+                chunkHeight = blocky if blocky < rows else rows
 
         self.subRegion = chunkWidth != columns or chunkHeight != rows
         self.regions = 1
@@ -264,7 +266,7 @@ class ChunksManager:
         height = self.chunkHeight
         if (self.regions == 1):
             region = "0,0," + str(width) + "," + str(height)
-            chunk = "_"
+            chunk = "_R01C01"
         else:
             xOffset = 0 if (horizontalIndex == 0) else (horizontalIndex * (self.chunkWidth - overlapping))
             xOffset = self.columns if (xOffset > self.columns) else xOffset

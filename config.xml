@@ -48,7 +48,7 @@
             <defaultProfile>SST</defaultProfile>
         </SLSTRL2>
         <SLSTRL1>
-            <resolution>0.005</resolution>
+            <resolution>0.01</resolution>
             <blocksize>fullswath,500</blocksize>
         </SLSTRL1>
     </products>

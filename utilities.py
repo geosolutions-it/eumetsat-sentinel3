@@ -37,7 +37,7 @@ class FileNameBuilder:
         
     def _getGraphFile(self):
         timestamp = int(round(time.time()*1000))
-        return os.path.join(self.directory, str(timestamp) + 'graph.xml')
+        return os.path.join(self.directory, self.startTime + '_' + str(timestamp) + 'graph.xml')
         
     def _getSummaryFile(self):
         return os.path.join(self.directory, self.startTime + 'summary.properties')

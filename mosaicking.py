@@ -75,7 +75,8 @@ class Mosaicker:
 
     # Mosaic the collected pieces together
     def mosaic(self):
-                
+        orbits = self.groupSummaries()
+        sortedOrbits = sorted(orbits)
         outputNames = self.collectOutputNames()
         logger.debug("available bands: " + str(outputNames))
         granulesPerMosaic = self.configuration.granulesPerMosaic
@@ -83,53 +84,72 @@ class Mosaicker:
         deltaSeconds = -1
         logger.info("Start Mosaicking with maxGranulesPerMosaic:" + str(granulesPerMosaic) + " timePeriod:" + str(timePeriod) + " seconds")
         for band in outputNames:
-            filesPerMosaic = 0
-            filesList = []
-            summariesLength = len(self.summaries)
-            minTime = None
-            maxTime = None
-            # Loop over processed products
-            for summary in self.summaries:
-                starttime = summary.startTime
-                stoptime = summary.stopTime
-                chunks = summary.chunks
-                productType = summary.productType
-                splitbyband = summary.splitByBand
-                location = summary.location
+            for orbitSet in sortedOrbits:
+                summaries = orbits[orbitSet]
+                summaries.sort(key=lambda x: x.startTime, reverse=False)
+                filesPerMosaic = 0
+                filesList = []
+                summariesLength = len(summaries)
+                minTime = None
+                maxTime = None
                 
-                # TODO add checks on orbit for orbits groupings 
-                
-                # Computing current time period
-                minTime = starttime if minTime is None else minTime if minTime < starttime else starttime
-                maxTime = stoptime if maxTime is None else maxTime if maxTime > stoptime else stoptime
-                chunkPieces = chunks.split(',') if (len(chunks)> 0) else ['']
-                for chunkPiece in chunkPieces:
-                    directory = summary.directory
-                    filePath = summary.fileNameBuilder.buildFilePath(band, chunkPiece)
-                    self.preProcess(summary, filePath)
+                # Loop over processed products
+                for summary in summaries:
+                    starttime = summary.startTime
+                    stoptime = summary.stopTime
+                    print "orbit:" + str(orbitSet) + " startTime:" + str(starttime)
+                    continue
+                    chunks = summary.chunks
+                    productType = summary.productType
+                    splitbyband = summary.splitByBand
+                    location = summary.location
                     
-                    filesList.append(filePath)
-                filesPerMosaic+=1
-                if (timePeriod > 1):
-                    deltaSeconds = getDeltaSeconds(maxTime, minTime)
-                
-                # Mosaic collected pieces since now in case the granules limit or the time period have been exceeded
-                if (filesPerMosaic == granulesPerMosaic or filesPerMosaic == summariesLength or (timePeriod > 0 and deltaSeconds > timePeriod)):
-                    message = "Going to mosaic " + str(filesPerMosaic) + " granules "
+                    # TODO add checks on orbit for orbits groupings 
+                    
+                    # Computing current time period
+                    minTime = starttime if minTime is None else minTime if minTime < starttime else starttime
+                    maxTime = stoptime if maxTime is None else maxTime if maxTime > stoptime else stoptime
+                    chunkPieces = chunks.split(',') if (len(chunks)> 0) else ['']
+                    for chunkPiece in chunkPieces:
+                        directory = summary.directory
+                        filePath = summary.fileNameBuilder.buildFilePath(band, chunkPiece)
+                        self.preProcess(summary, filePath)
+                        
+                        filesList.append(filePath)
+                    filesPerMosaic+=1
                     if (timePeriod > 1):
-                        message = message + " with mosaic time range = " + str(deltaSeconds) + " seconds"
-                    logger.info(message) 
-                    outputFolder = self.outputFolder if self.outputFolder is not None else directory
-                    self.mosaicFiles(filesList, outputFolder, band, summary.nodata, summary.orbit, minTime)
-                    minTime = None
-                    maxTime = None
-                    filesPerMosaic = 0
-                    deltaSeconds = -1
-                    added = 0
-                    filesList = []
+                        deltaSeconds = getDeltaSeconds(maxTime, minTime)
+                    
+                    # Mosaic collected pieces since now in case the granules limit or the time period have been exceeded
+                    if (filesPerMosaic == granulesPerMosaic or filesPerMosaic == summariesLength or (timePeriod > 0 and deltaSeconds > timePeriod)):
+                        message = "Going to mosaic " + str(filesPerMosaic) + " granules "
+                        if (timePeriod > 1):
+                            message = message + " with mosaic time range = " + str(deltaSeconds) + " seconds"
+                        logger.info(message) 
+                        outputFolder = self.outputFolder if self.outputFolder is not None else directory
+                        self.mosaicFiles(filesList, outputFolder, band, summary.nodata, summary.orbit, minTime)
+                        minTime = None
+                        maxTime = None
+                        filesPerMosaic = 0
+                        deltaSeconds = -1
+                        added = 0
+                        filesList = []
 #        if self.deleteFiles:
 #            for summaryFile in summaryFiles:
 #                os.remove(summaryFile)
+
+    def groupSummaries(self):
+        orbits = {}
+        for summary in self.summaries:
+            orbit = summary.orbit
+            orbitSet = None
+            if orbit in orbits:
+               orbitSet = orbits[orbit]
+            else:
+               orbitSet = []
+            orbitSet.append(summary)
+            orbits[orbit] = orbitSet
+        return orbits
 
     def mosaicFiles(self, inputFiles, directory, band, nodata, orbit, minTime):
         tifFiles = []

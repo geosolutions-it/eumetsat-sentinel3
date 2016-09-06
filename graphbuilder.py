@@ -219,8 +219,6 @@ class ChunksManager:
         chunkHeight = rows
         if (blocksize is not None):
             blocksizes = blocksize.split(',')
-            
-            # TODO: Make sure to handle wrong conditions
             if (len(blocksizes) == 2):
                 blocky = int(blocksizes[1])
                 if (blocksizes[0] == 'fullswath'):
@@ -237,6 +235,7 @@ class ChunksManager:
         lastChunkWidth = chunkWidth
         lastChunkHeight = chunkHeight
         if (self.subRegion):
+            # Prepare chunks by taking into account overlapping area
             if (chunkWidth != self.columns):
                 horizontalChunks = 1 + int(math.ceil(((self.columns - chunkWidth) / float(chunkWidth - self.configuration.overlapping))))
                 if (horizontalChunks > 1):
@@ -261,6 +260,7 @@ class ChunksManager:
         self.verticalChunks = verticalChunks
 
     def getChunk(self, horizontalIndex, verticalIndex):
+        # each chunk has a partial overlapping region to avoid seamlines
         overlapping = self.configuration.overlapping
         width = self.chunkWidth
         height = self.chunkHeight
@@ -279,7 +279,6 @@ class ChunksManager:
         return ChunkDefinition(chunk, region, width, height, horizontalIndex, verticalIndex)
 
     def getChunkInformation(self, chunkDefinition):
-        #TODO return more info
         return "Chunking details (" + chunkDefinition.chunkID + "): horizontalChunk=" + str(chunkDefinition.horizontalIndex+1) + " of " +\
                str(self.horizontalChunks) + " ; verticalChunk=" + str(chunkDefinition.verticalIndex+1) + " of " +\
                str(self.verticalChunks) + " rows=" + str(self.rows) + " columns=" + str(self.columns) +\

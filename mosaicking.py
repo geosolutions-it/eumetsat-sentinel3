@@ -75,6 +75,7 @@ class Mosaicker:
 
     # Mosaic the collected pieces together
     def mosaic(self):
+        # Group summaries by orbit
         orbits = self.groupSummaries()
         sortedOrbits = sorted(orbits)
         outputNames = self.collectOutputNames()
@@ -86,6 +87,7 @@ class Mosaicker:
         for band in outputNames:
             for orbitSet in sortedOrbits:
                 summaries = orbits[orbitSet]
+                # Sort orbits by starttime
                 summaries.sort(key=lambda x: x.startTime, reverse=False)
                 filesPerMosaic = 0
                 filesList = []
@@ -103,8 +105,6 @@ class Mosaicker:
                     productType = summary.productType
                     splitbyband = summary.splitByBand
                     location = summary.location
-                    
-                    # TODO add checks on orbit for orbits groupings 
                     
                     # Computing current time period
                     minTime = starttime if minTime is None else minTime if minTime < starttime else starttime
@@ -139,6 +139,7 @@ class Mosaicker:
 #                os.remove(summaryFile)
 
     def groupSummaries(self):
+        # Regroup summaries by orbit
         orbits = {}
         for summary in self.summaries:
             orbit = summary.orbit

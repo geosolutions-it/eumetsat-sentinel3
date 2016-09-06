@@ -116,7 +116,11 @@ def main():
         logger.warn("No input files available, exit")
         return
     timestamp = int(round(time.time()*1000))
-    listFileName = os.path.join(configuration.outputFolder, str(timestamp) + '_run.txt')
+    directory = configuration.outputFolder
+    folderExists = os.path.exists(directory)
+    if not folderExists:
+        os.makedirs(directory)
+    listFileName = os.path.join(directory, str(timestamp) + '_run.txt')
     listFile =  open(listFileName, "w")
     for inputFile in fileList:
         message = fileNotExists(inputFile, 'skipping it')

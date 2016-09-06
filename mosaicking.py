@@ -99,8 +99,6 @@ class Mosaicker:
                 for summary in summaries:
                     starttime = summary.startTime
                     stoptime = summary.stopTime
-                    print "orbit:" + str(orbitSet) + " startTime:" + str(starttime)
-                    continue
                     chunks = summary.chunks
                     productType = summary.productType
                     splitbyband = summary.splitByBand

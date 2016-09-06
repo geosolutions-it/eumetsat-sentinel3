@@ -115,6 +115,9 @@ def main():
     if len(fileList) == 0:
         logger.warn("No input files available, exit")
         return
+    timestamp = int(round(time.time()*1000))
+    listFileName = os.path.join(configuration.outputFolder, str(timestamp) + '_run.txt')
+    listFile =  open(listFileName, "w")
     for inputFile in fileList:
         message = fileNotExists(inputFile, 'skipping it')
         if message is not None:
@@ -127,10 +130,12 @@ def main():
         command = setGPTCommand(configuration.GPTArguments, graphFile)
         logger.info("Executing SNAP GPT with command: " + getCommandString(command))
         execute(command)
+        listFile.write(summary.summaryFileName + "\n")
         if configuration.deleteFiles:
             os.remove(graphFile)
         if configuration.doMosaic:
             mosaicker.add(summary)
+    listFile.close()
     if configuration.doMosaic:
         mosaicker.mosaic()
 

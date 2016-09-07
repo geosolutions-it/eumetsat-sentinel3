@@ -179,8 +179,9 @@ class Mosaicker:
             message = vrtFile + " hasn't been created"
             logger.error(message)
             raise IOError(message)
-        self.setEmptyTif(vrtFile, outputTif, nodata)
+        numBands = self.setEmptyTif(vrtFile, outputTif, nodata)
         self.warpFiles(inputFiles, outputTif, nodata)
+        self.setNoDataValues(outputTif, nodata, numBands)
         self.addOverviews(outputTif)
 
     #Pre-Create a TIF for future mosaicking. Empty tifs allow dealing with empty tiles
@@ -204,6 +205,15 @@ class Mosaicker:
         outRaster = None
         if self.configuration.deleteFiles:
             os.remove(vrtFile)
+        return numBands
+
+    def setNoDataValues(self, outputTif, nodata, numBands):
+        if numBands > 1:
+            #command = settings.gdalEditCommand.replace('$NODATA', "0 0 0")  
+            commandArguments = ['gdal_edit.py', '-mo', '"NODATA_VALUES=0 0 0"']
+	    commandArguments.append(outputTif)
+	    print str(commandArguments)
+            execute(commandArguments)
 
     #Place granules to the final tif through a warping operation
     def warpFiles(self, inputFiles, output, nodata):

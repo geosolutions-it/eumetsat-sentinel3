@@ -40,7 +40,7 @@ gdalWarpCommand = 'gdalwarp -wo SKIP_NOSOURCE=YES -srcnodata $SRC_NODATA_VALUE -
 gdalVRTCommand  = 'gdalbuildvrt -srcnodata $SRC_NODATA_VALUE -vrtnodata $VRT_NODATA_VALUE'
 gdalAddoCommand = 'gdaladdo -r average'
 gdalEditCommand = "gdal_edit.py -mo \"NODATA_VALUES=$NODATA\""  
-gdalrgbCommand  = 'gdal_translate -OT Byte -CO TILED=YES $PARAMETERS'
+gdalrgbCommand  = 'gdal_translate -OT Byte -CO TILED=YES -b 3 -b 2 -b 1 $PARAMETERS'
 
 
 #Keys

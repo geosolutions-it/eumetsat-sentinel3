@@ -37,7 +37,7 @@
         </OLCIL2>
         <OLCIL1>
             <resolution>0.01</resolution>
-            <bandNames>Oa08_radiance,Oa06_radiance,Oa02_radiance</bandNames><!-- longitude,latitude -->
+            <bandNames>Oa02_radiance,Oa06_radiance,Oa08_radiance</bandNames><!-- longitude,latitude -->
             <blocksize>fullswath,800</blocksize>
             <defaultProfile>OLCIL1RGB</defaultProfile>
         </OLCIL1>

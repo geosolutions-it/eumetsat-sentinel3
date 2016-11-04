@@ -1,7 +1,6 @@
 <config>
     <processing>
         <outputRootFolder>/work/data/eumetsat/SENTINEL-4-2</outputRootFolder>
-        <deleteFiles>False</deleteFiles>
         <cleanupOnFailure>True</cleanupOnFailure>
         <overlapping>10</overlapping>
         <writeSummary>True</writeSummary>
@@ -48,8 +47,11 @@
             <defaultProfile>SST</defaultProfile>
         </SLSTRL2>
         <SLSTRL1>
-            <resolution>0.01</resolution>
+            <!-- resolution>0.01</resolution -->
+            <resolution>0.05</resolution>
+            <!-- blocksize>fullswath,500</blocksize -->
             <blocksize>fullswath,500</blocksize>
+            <!-- blocksize>400,400</blocksize -->
         </SLSTRL1>
     </products>
     <profiles>
@@ -88,6 +90,24 @@
             <splitbyband>False</splitbyband>
             <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
             <bandNames>S3_radiance_an,S2_radiance_an,S1_radiance_an</bandNames>
+            <!--bandNames>S1_radiance_an,S2_radiance_an,S3_radiance_an</bandNames-->
+            <flagsManagement>
+                <controlBands>confidence_an,S1_exception_an,S2_exception_an,S3_exception_an</controlBands>
+                <outputBands>
+                    <outputBand>
+                        <name>S3_radiance_an</name>
+                        <expression>S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S3_radiance_an : NaN</expression>
+                    </outputBand>
+                    <outputBand>
+                        <name>S2_radiance_an</name>
+                        <expression>S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S2_radiance_an : NaN</expression>
+                    </outputBand>
+                    <outputBand>
+                        <name>S1_radiance_an</name>
+                        <expression>S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S1_radiance_an : NaN</expression>
+                    </outputBand>
+                </outputBands>
+            </flagsManagement>
             <preMosaicProcess>
                 <method>gdalrgb</method>
                 <parameters>-a_nodata 0 -scale 20 400 1 255</parameters>
@@ -104,19 +124,19 @@
             <readerFormat>Sen3_SLSTRL1B_500m</readerFormat>
             <bandNames>S3_radiance_an,S2_radiance_an,S1_radiance_an</bandNames>
             <flagsManagement>
-                <controlBands>confidence_an</controlBands>
+                <controlBands>confidence_an,S1_exception_an,S2_exception_an,S3_exception_an</controlBands>
                 <outputBands>
                     <outputBand>
                         <name>S3_radiance_an_daytime</name>
-                        <expression>confidence_an.day ? S3_radiance_an : NaN</expression>
+                        <expression>confidence_an.day &amp;&amp; S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S3_radiance_an : NaN</expression>
                     </outputBand>
                     <outputBand>
                         <name>S2_radiance_an_daytime</name>
-                        <expression>confidence_an.day ? S2_radiance_an : NaN</expression>
+                        <expression>confidence_an.day &amp;&amp; S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S2_radiance_an : NaN</expression>
                     </outputBand>
                     <outputBand>
                         <name>S1_radiance_an_daytime</name>
-                        <expression>confidence_an.day ? S1_radiance_an : NaN</expression>
+                        <expression>confidence_an.day &amp;&amp; S1_exception_an==0 &amp;&amp; S2_exception_an==0 &amp;&amp; S3_exception_an==0 ? S1_radiance_an : NaN</expression>
                     </outputBand>
                 </outputBands>
             </flagsManagement>
